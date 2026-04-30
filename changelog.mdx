@@ -1,8 +1,7 @@
-<Update date="2026-04-30" title="Add tracing, Azure/OpenAI integration, and product retrieval flow for Contoso Chat">
-- Introduced observability with console and PromptyTracer-based tracing and integrated PromptyAzure support.
-- Implemented centralized tracing initialization (tracing.py) to support OpenTelemetry with Azure Monitor export when remote tracing is enabled.
-- Enhanced chat flow (contoso_chat) to fetch customer data from Cosmos, derive contextual product recommendations, and generate responses via Prompty/Azure OpenAI.
-- Implemented product retrieval pipeline: queries generated via Prompty, embeddings created, and semantic search results retrieved from Azure Cognitive Search using vector queries.
-- Added evaluation modules (coherence, fluency, groundedness, relevance) wired to Prompty Azure-based evaluators to support end-to-end evaluation.
-- Wired FastAPI app instrumentation and endpoint flow to leverage tracing across the API surface. 
+<Update date="2026-04-30" title="Initialize Prompty tracing and Azure OpenAI integration for Contoso Chat">
+- Load environment variables at startup with dotenv and initialize Prompty tracing (console and JSON) across the Contoso Chat modules.
+- Register Prompty tracers via Tracer for consistent distributed tracing.
+- Introduce a complete chat flow that retrieves customer data, finds relevant products using embeddings, and queries Azure OpenAI via Prompty for responses.
+- Implement embedding generation and semantic product retrieval using Azure OpenAI and Azure Cognitive Search, wired through the product.find_products workflow.
+- Prepare model configuration from environment variables (Azure OpenAI endpoint and API version) and integrate tracing into core paths (chat_request, product search, and evaluators).
 </Update>
