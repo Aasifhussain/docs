@@ -1,0 +1,20 @@
+---
+title: Contoso Chat API
+slug: contoso-chat
+description: A prompt-driven backend that uses Azure OpenAI, Cosmos DB, and Azure Cognitive Search to deliver personalized customer support with product recommendations.
+---
+
+## Summary
+Contoso Chat API is a prompt-driven backend that retrieves customer data from Cosmos DB, derives contextual product recommendations through embeddings and Azure Cognitive Search, and generates answers with Prompty orchestrated prompts against Azure OpenAI, all surfaced via a FastAPI endpoint.
+
+## Key features
+- End-to-end chat flow: fetches customer data, aggregates product context, and generates an answer in a single flow
+- Cosmos DB integration: reads customer items securely and trims sensitive fields for response generation
+- Embeddings and semantic search: generates embeddings and retrieves relevant products using Azure Cognitive Search
+- Prompty orchestration: leverages prompty.execute with chat.prompty and product.prompty to drive prompts and responses
+- Azure OpenAI integration: uses Azure OpenAI endpoint and API version for model interaction
+- Observability: built-in tracing with PromptyTracer and OpenTelemetry-compatible tracing
+- FastAPI endpoint: exposes /api/create_response for easy integration with clients
+
+## Architecture note
+The API runs on FastAPI and exposes /api/create_response. When invoked, it calls get_response with a customerId, question, and chat_history. get_response loads the customer from Cosmos DB (via CosmosClient and DefaultAzureCredential), reduces the orders list, and discovers contextual product data by calling product.find_products(question). find_products executes a Prompty-backed flow (product.prompty) to determine product queries, generates embeddings for those queries (using AzureOpenAI embeddings), and retrieves matching products from Azure Cognitive Search with vector queries. The final answer is produced by prompty.execute against chat.prompty with inputs including the customer data and the product context. The system uses environment-driven configuration (Cosmos endpoint, Azure OpenAI endpoint/version, and search endpoint) and includes tracing via PromptyTracer and OpenTelemetry for observability.
