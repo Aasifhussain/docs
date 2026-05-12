@@ -1,19 +1,1 @@
-# Contoso Chat API
 
-The Contoso Chat API is a cloud-native assistant that personalizes customer support for Contoso Outdoor by fetching customer data from Cosmos DB, enriching conversations with context-aware product recommendations retrieved via embeddings and semantic search against Azure Cognitive Search, and generating answers using Azure OpenAI through Prompty-driven prompts, all with integrated tracing and observability.
-
-## Key features
-- Prompty-driven orchestration of prompts to generate conversational responses
-- Cosmos DB-backed customer lookup with selective order history embedding
-- Contextual product retrieval via embeddings and semantic search (Azure OpenAI embeddings + Azure Cognitive Search)
-- Environment-driven configuration (Azure endpoints, API versions, credentials) via dotenv
-- End-to-end tracing with console and Prompty JSON tracers; optional OpenTelemetry + Azure Monitor exporter
-- FastAPI-based API with CORS and optional streaming responses
-- Modular evaluation helpers for coherence, relevance, fluency, and groundedness
-
-## Architecture note
-- Client -> FastAPI app exposes /api/create_response
-- chat_request.get_response orchestrates: fetch customer (Cosmos DB) -> derive product context (product.find_products) -> generate answer via Prompty chat prompt
-- Product workflow: product.find_products calls product.prompty to obtain queries, generate embeddings (Azure OpenAI), and retrieve relevant products through Azure Cognitive Search (vector queries, semantic search)
-- Tracing and observability are wired via PromptyTracer and OpenTelemetry with Azure Monitor export
-- All configuration and credentials are sourced from environment variables (via dotenv) for flexible deployment across environments
