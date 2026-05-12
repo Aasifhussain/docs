@@ -1,16 +1,1 @@
-# Contoso Chat: AI-Powered Customer Support and Product Discovery
 
-Contoso Chat is a Python-based API that orchestrates an AI-powered customer conversation by pulling customer data from Cosmos DB, generating product context with Prompty prompts, embedding user queries with Azure OpenAI, and retrieving semantically relevant products from Azure Cognitive Search, all exposed via FastAPI and instrumented with Prompty and OpenTelemetry tracers.
-
-## Key Features
-
-- Cosmos DB integration for customer data retrieval using CosmosClient and read_item
-- Prompty-driven conversation orchestration across chat and product discovery flows
-- Azure OpenAI embeddings generation (text-embedding-ada-002) to build semantic representations
-- Vector-based product retrieval via Azure Cognitive Search with VectorizedQuery and semantic options
-- End-to-end FastAPI service with CORS, tracing, and a dedicated /api/create_response endpoint
-- Extensible evaluation pipeline (coherence, relevance, fluency, groundedness) for response quality
-
-## Architecture
-
-The system comprises a modular Python stack under src/api/contoso_chat. The chat_request module orchestrates the flow: it fetches customer data from Cosmos DB using DefaultAzureCredential, derives product context via product.find_products (which prompts Prompty to generate queries, then generates embeddings, and finally retrieves top semantic results from Azure Search using VectorizedQuery), and executes a Prompty-powered prompt against Azure OpenAI to produce an answer. The FastAPI app exposes /api/create_response and is configured via environment variables (COSMOS_ENDPOINT, AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_VERSION, AZURE_SEARCH_ENDPOINT, etc.), with optional local or remote tracing through PromptyTracer or OpenTelemetry (Azure Monitor exporter). An evaluators module provides additional evaluation hooks for coherence, relevance, fluency, and groundedness.
