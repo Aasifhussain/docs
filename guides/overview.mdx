@@ -1,0 +1,29 @@
+# Contoso Chat: AI-Powered Customer Assistant
+
+Contoso Chat is an Azure-native AI assistant that orchestrates customer conversations by pulling user data from Cosmos DB, enriching responses with product context retrieved through embeddings and Azure Cognitive Search, and generating replies via Prompty-powered prompts against Azure OpenAI. It exposes a FastAPI endpoint for real-time interactions, and includes a tracing and evaluation stack to provide observability and quality assessment across the chat workflow.
+
+## Key Features
+
+- End-to-end chat orchestration: retrieve customer data from Cosmos DB, fetch product context, and generate answers with Prompty prompts against Azure OpenAI.
+- Embeddings and semantic search: create embeddings for queries and retrieve relevant products using Azure Cognitive Search.
+- Prompty-driven prompts: leverage chat.prompty and product.prompty to shape responses and context.
+- Azure-native authentication and config: DefaultAzureCredential, Azure OpenAI, and environment-based configuration (via dotenv).
+- Observability and tracing: console and JSON tracers, PromptyTracer, and optional OpenTelemetry Azure Monitor exporter.
+- Evaluation pipeline: dedicated evaluators (coherence, relevance, fluency, groundedness) to assess and improve responses.
+- API-first exposure: FastAPI endpoint at /api/create_response for integration into apps and services.
+- Local development friendly: dotenv-based configuration with a scalable, production-ready architecture.
+
+## Architecture
+
+The system comprises an API layer, a data/services layer, an orchestration layer, and a observability stack. The API (FastAPI) exposes endpoints like /api/create_response and delegates to chat_request.get_response, which:
+- Reads the COSMOS_ENDPOINT and authenticates via DefaultAzureCredential to read the customer from the contoso-outdoor/customers container.
+- Uses product.find_products to generate product queries via Prompty, create embeddings, and perform semantic retrieval with Azure Cognitive Search (contoso-products).
+- Calls Prompty (chat.prompty) with inputs: question, customer, and documentation context, configured against Azure OpenAI (endpoint and API version from env).
+- Returns a structured response containing the question, answer, and context.
+
+Supporting components include:
+- Product service: generates embeddings and performs vector-based product retrieval.
+- Evaluators: coherence, relevance, fluency, and groundedness modules to assess outputs.
+- Tracing: configurable via tracing.py with PromptyTracer and OpenTelemetry Azure Monitor exporter for telemetry and observability.
+
+- Data and config: dotenv-loadable environment variables (COSMOS_ENDPOINT, AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_VERSION, etc.) drive behavior across services.
